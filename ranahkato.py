@@ -21,13 +21,16 @@ except Exception as e:
 
 # 2. Menampilkan nama sheet dalam file
 st.write("Sheet yang ada dalam file:")
-st.write(data.keys())
+st.write(data.keys())  # Menampilkan semua sheet yang ada dalam file
 
 # 3. Menyiapkan Data dari Setiap Sheet
 cleaned_data = {}
 for sheet_name, sheet_data in data.items():
+    st.write(f"Memproses data dari sheet: {sheet_name}")  # Menampilkan nama sheet yang sedang diproses
     if 'Bentuk Kosakata' in sheet_data.columns and 'Transkripsi Fonemis' in sheet_data.columns and 'Kata' in sheet_data.columns:
         cleaned_data[sheet_name] = sheet_data[['Bentuk Kosakata', 'Transkripsi Fonemis', 'Kata']].dropna()
+    else:
+        st.warning(f"Sheet '{sheet_name}' tidak memiliki kolom yang diperlukan.")
 
 # 4. Menggunakan Streamlit untuk Input dan Menampilkan Hasil
 st.title("Aplikasi Pencarian Kosakata Minangkabau")
@@ -38,7 +41,7 @@ user_input = st.text_input("Masukkan Kosakata:")
 # Proses pencarian jika pengguna memasukkan input
 if user_input:
     all_matches = {}
-    
+
     # Mencocokkan kosakata pengguna dengan data yang ada pada setiap sheet
     for sheet_name, sheet_data in cleaned_data.items():
         matched_words = sheet_data[sheet_data['Bentuk Kosakata'].apply(lambda x: match_strings(user_input, x) > 80)]
