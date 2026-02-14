@@ -1,5 +1,5 @@
 import pandas as pd
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 import streamlit as st
 
 # 1. Memuat Data Kosakata dari URL Raw GitHub
