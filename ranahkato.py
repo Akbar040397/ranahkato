@@ -2,17 +2,25 @@ import pandas as pd
 from rapidfuzz import fuzz
 import streamlit as st
 
-# 1. Memuat Data Kosakata dari URL Raw GitHub
+# Fungsi untuk mencocokkan string dengan ketepatan yang mendekati (case-insensitive)
+def match_strings(str1, str2):
+    str1 = str1.strip().lower()  # Menghilangkan spasi dan mengubah menjadi huruf kecil
+    str2 = str2.strip().lower()
+    return fuzz.partial_ratio(str1, str2)
+
+# URL file Excel yang sudah dihosting di GitHub
 file_url = "https://raw.githubusercontent.com/akbaridaman/ranahkato/main/ranahkato.xlsx"
+
+# Membaca file Excel dari URL
 try:
-    # Membaca semua sheet dalam file Excel
-    data = pd.read_excel(file_url, sheet_name=None)
+    data = pd.read_excel(file_url, sheet_name=None)  # Membaca semua sheet dalam file
+    st.write("Berhasil memuat file Excel dari URL.")
 except Exception as e:
     st.error(f"Terjadi kesalahan saat memuat file: {e}")
     st.stop()
 
-# 2. Menampilkan nama-nama sheet yang ada dalam file
-st.write("Nama-nama sheet dalam file Excel:")
+# 2. Menampilkan nama sheet dalam file
+st.write("Sheet yang ada dalam file:")
 st.write(data.keys())
 
 # 3. Menyiapkan Data dari Setiap Sheet
@@ -21,13 +29,7 @@ for sheet_name, sheet_data in data.items():
     if 'Bentuk Kosakata' in sheet_data.columns and 'Transkripsi Fonemis' in sheet_data.columns and 'Kata' in sheet_data.columns:
         cleaned_data[sheet_name] = sheet_data[['Bentuk Kosakata', 'Transkripsi Fonemis', 'Kata']].dropna()
 
-# 4. Fungsi untuk Mencocokkan String dengan Ketepatan yang Mendekati (menggunakan partial_ratio untuk case-insensitive)
-def match_strings(str1, str2):
-    str1 = str1.strip().lower()
-    str2 = str2.strip().lower()
-    return fuzz.partial_ratio(str1, str2)
-
-# 5. Menggunakan Streamlit untuk Input dan Menampilkan Hasil
+# 4. Menggunakan Streamlit untuk Input dan Menampilkan Hasil
 st.title("Aplikasi Pencarian Kosakata Minangkabau")
 
 # Input dari pengguna
