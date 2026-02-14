@@ -1,0 +1,4 @@
+streamlit
+fuzzywuzzy
+pandas
+openpyxl  # Jika Anda menggunakan Excel
